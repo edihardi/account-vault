@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   const encrypted = encryptBackup(JSON.stringify(backup), password);
 
   const date = new Date().toISOString().slice(0, 10);
-  return new NextResponse(encrypted, {
+  return new NextResponse(new Uint8Array(encrypted), {
     headers: {
       "Content-Type": "application/octet-stream",
       "Content-Disposition": `attachment; filename="account-vault-${date}.avbak"`,
