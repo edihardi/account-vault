@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Konfigurasi Aplikasi
+model AppConfig {
+  id             String    @id @default(cuid())
+  masterPassHash String
+  pinHash        String
+  pinFailCount   Int       @default(0)
+  pinLockedUntil DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// Induk Utama: Email
+model EmailAccount {
+  id            String    @id @default(cuid())
+  emailAddress  String    @unique
+  password      String
+  provider      String
+  recoveryEmail String?
+  proxy         String?
+  status        String    @default("ACTIVE")
+  notes         String?
+  deletedAt     DateTime?
+  socialAccounts SocialAccount[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Anak: Semua Platform (unified)
+model SocialAccount {
+  id        String    @id @default(cuid())
+  platform  String
+  username  String?
+  phone     String?
+  password  String?
+  token     String?
+  totpSeed  String?
+  extraData String?
+  status    String    @default("ACTIVE")
+  notes     String?
+  deletedAt DateTime?
+  emailId   String
+  email     EmailAccount @relation(fields: [emailId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
