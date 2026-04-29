@@ -33,8 +33,9 @@ export default function EmailFormModal({ email, onClose }: Props) {
   }, [state, onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="w-full max-w-lg bg-card border border-border rounded-xl shadow-2xl max-h-[90vh] flex flex-col animate-bounce-in">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm animate-fade-in">
+      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="w-full max-w-lg bg-card border border-border rounded-xl shadow-2xl flex flex-col animate-bounce-in">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
@@ -149,6 +150,7 @@ export default function EmailFormModal({ email, onClose }: Props) {
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );
