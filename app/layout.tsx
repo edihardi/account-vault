@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Account Vault",
+  title: "Koleksi Akun Hardi",
   description: "Manajemen kredensial terpusat",
 };
 
@@ -18,8 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${outfit.variable} dark h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="id" className={`${jetbrainsMono.variable} dark h-full antialiased`}>
+      <body className="h-full flex flex-col">
+        {children}
+        <footer className="mt-auto py-4 text-center text-[10px]">
+          <span className="animate-footer-pulse">Made with ❤️ by ediology</span>
+        </footer>
+      </body>
     </html>
   );
 }

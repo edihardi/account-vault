@@ -1,8 +1,9 @@
 const colors: Record<string, string> = {
-  ACTIVE: "bg-emerald-500/15 text-emerald-400",
-  INACTIVE: "bg-zinc-500/15 text-zinc-400",
-  BANNED: "bg-red-500/15 text-red-400",
-  SUSPENDED: "bg-amber-500/15 text-amber-400",
+  // VS Code syntax color palette
+  ACTIVE:    "bg-[#4ec9b0]/10 text-[#4ec9b0] ring-1 ring-[#4ec9b0]/20",   // teal
+  INACTIVE:  "bg-[#858585]/10 text-[#858585] ring-1 ring-[#858585]/20",   // grey
+  BANNED:    "bg-[#f44747]/10 text-[#f44747] ring-1 ring-[#f44747]/20",   // red
+  SUSPENDED: "bg-[#ce9178]/10 text-[#ce9178] ring-1 ring-[#ce9178]/20",   // orange
 };
 
 export default function StatusBadge({ status }: { status: string }) {

@@ -23,10 +23,13 @@ export default function PinModal({ onSuccess, onClose }: PinModalProps) {
   }, [state, onSuccess]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-xs bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl">
-        <h2 className="text-white font-semibold text-center mb-1">Masukkan PIN</h2>
-        <p className="text-zinc-400 text-sm text-center mb-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-xs bg-card border border-border rounded-xl p-6 shadow-2xl animate-bounce-in">
+        <div className="text-center mb-1">
+          <span className="text-3xl animate-float inline-block">🔒</span>
+        </div>
+        <h2 className="font-semibold text-center mb-1 syntax-function">Masukkan PIN</h2>
+        <p className="text-muted-foreground text-sm text-center mb-5">
           Diperlukan untuk melihat kredensial
         </p>
 
@@ -39,25 +42,25 @@ export default function PinModal({ onSuccess, onClose }: PinModalProps) {
             maxLength={6}
             required
             placeholder="••••••"
-            className="w-full px-3 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500 tracking-widest text-center text-xl"
+            className="w-full px-3 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary tracking-widest text-center text-xl transition-colors"
           />
 
           {state && "error" in state && (
-            <p className="text-sm text-red-400 text-center">{state.error}</p>
+            <p className="text-sm text-destructive text-center animate-fade-in">{state.error}</p>
           )}
 
           <div className="flex gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm transition-colors"
+              className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground/70 rounded-lg text-sm transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={pending}
-              className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium rounded-lg text-sm transition-colors"
+              className="flex-1 py-2.5 bg-primary hover:opacity-90 disabled:opacity-50 text-primary-foreground font-medium rounded-lg text-sm transition-opacity"
             >
               {pending ? "..." : "Verifikasi"}
             </button>

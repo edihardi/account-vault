@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --require dotenv/config --experimental-strip-types --experimental-transform-types --test lib/__tests__/*.test.ts"
+    "test": "node --require dotenv/config --experimental-strip-types --experimental-transform-types --test lib/__tests__/*.test.ts",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
