@@ -6,7 +6,7 @@ import DashboardClient from "@/components/DashboardClient";
 export default async function DashboardPage() {
   const emails = await prisma.emailAccount.findMany({
     where: { deletedAt: null },
-    orderBy: { createdAt: "desc" },
+    orderBy: { socialAccounts: { _count: "desc" } },
     select: {
       id: true,
       emailAddress: true,
