@@ -11,7 +11,8 @@
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "pg": "^8.13.3",
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.3",
     "iron-session": "^8.0.4",
