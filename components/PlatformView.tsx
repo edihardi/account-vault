@@ -6,6 +6,9 @@ import { revealCredentialsAction } from "@/app/actions/accounts";
 import PinModal from "./PinModal";
 import PinSessionBadge from "./PinSessionBadge";
 import StatusBadge from "./StatusBadge";
+import Pagination from "./Pagination";
+
+const PAGE_SIZE = 10;
 
 interface SocialAccount {
   id: string;
@@ -53,6 +56,7 @@ export default function PlatformView({ emails, platform }: Props) {
   const [showPinModal, setShowPinModal] = useState(false);
   const [revealedMap, setRevealedMap] = useState<Record<string, RevealedData>>({});
   const [copied, setCopied] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
   // Auto-hide saat PIN expire
   useEffect(() => {
@@ -68,6 +72,11 @@ export default function PlatformView({ emails, platform }: Props) {
       }
     }
   }
+
+  const totalPages = Math.max(1, Math.ceil(flatAccounts.length / PAGE_SIZE));
+  const paginated = flatAccounts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [platform]);
 
   function handlePinNeeded(cb: () => void) {
     pendingCallbackRef.current = cb;
@@ -114,24 +123,27 @@ export default function PlatformView({ emails, platform }: Props) {
           Tidak ada akun untuk platform ini.
         </div>
       ) : (
-        <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
-          {flatAccounts.map(({ account, emailAddress }) => {
-            const revealed = revealedMap[account.id];
-            return (
-              <PlatformAccountRow
-                key={account.id}
-                account={account}
-                emailAddress={emailAddress}
-                revealed={revealed ?? null}
-                copied={copied}
-                pinActive={pinActive}
-                onPinNeeded={handlePinNeeded}
-                onRevealed={handleRevealDone}
-                onCopy={copyToClipboard}
-              />
-            );
-          })}
-        </div>
+        <>
+          <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
+            {paginated.map(({ account, emailAddress }) => {
+              const revealed = revealedMap[account.id];
+              return (
+                <PlatformAccountRow
+                  key={account.id}
+                  account={account}
+                  emailAddress={emailAddress}
+                  revealed={revealed ?? null}
+                  copied={copied}
+                  pinActive={pinActive}
+                  onPinNeeded={handlePinNeeded}
+                  onRevealed={handleRevealDone}
+                  onCopy={copyToClipboard}
+                />
+              );
+            })}
+          </div>
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       )}
 
       {showPinModal && (
@@ -184,6 +196,7 @@ function PlatformAccountRow({
 
   const hasPassword = !!(account.password);
   const displayName = account.username ?? account.phone ?? "—";
+  const altAddress = account.notes?.match(/Registered with (?:plus|dot) address:\s*(\S+@\S+)/i)?.[1] ?? null;
 
   return (
     <div className="px-4 py-3 bg-background hover:bg-muted/20 transition-colors">
@@ -197,7 +210,7 @@ function PlatformAccountRow({
 
       {/* Email */}
       <p className="text-xs syntax-string font-mono truncate mb-1.5">
-        {emailAddress}
+        {altAddress ?? emailAddress}
       </p>
 
       {/* Password */}

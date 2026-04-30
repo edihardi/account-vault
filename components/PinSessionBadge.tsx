@@ -10,8 +10,8 @@ export default function PinSessionBadge({ secondsLeft, onClear }: Props) {
   const secs = secondsLeft % 60;
   const timeStr = `${mins}:${secs.toString().padStart(2, "0")}`;
 
-  // Warna berubah ke kuning saat < 60 detik
-  const urgent = secondsLeft < 60;
+  // Warna berubah ke kuning saat 20 detik terakhir
+  const urgent = secondsLeft < 20;
 
   return (
     <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] md:text-xs border animate-fade-in ${

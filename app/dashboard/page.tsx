@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { logoutAction } from "@/app/actions/auth";
 import DashboardClient from "@/components/DashboardClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const emails = await prisma.emailAccount.findMany({
     where: { deletedAt: null },

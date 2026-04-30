@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const PIN_TTL_MS = 5 * 60 * 1000; // 5 menit
+const PIN_TTL_MS = 1 * 60 * 1000; // 1 menit
 
 /**
  * Tracks client-side PIN session state.
@@ -17,6 +17,7 @@ export function usePinSession() {
 
   const markPinVerified = useCallback(() => {
     setVerifiedAt(Date.now());
+    setSecondsLeft(Math.ceil(PIN_TTL_MS / 1000));
   }, []);
 
   const clearPin = useCallback(() => {

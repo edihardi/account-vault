@@ -48,13 +48,21 @@ const PLATFORM_ICONS: Record<string, string> = {
   instagram: "📸", tiktok: "🎵", facebook: "📘",
   reddit: "🤖", github: "🐙", steam: "🕹️",
   youtube: "▶️", twitch: "💜", spotify: "🎧",
+  bybit: "🪙", stockbit: "📈",
 };
 
 function getPlatformIcon(p: string) {
   return PLATFORM_ICONS[p.toLowerCase()] ?? "🔑";
 }
 
+function getAltAddress(notes: string | null): string | null {
+  if (!notes) return null;
+  const m = notes.match(/Registered with (?:plus|dot) address:\s*(\S+@\S+)/i);
+  return m ? m[1] : null;
+}
+
 export default function SocialAccountRow({ account, emails, pinActive, onPinNeeded, variant = "table" }: Props) {
+  const altAddress = getAltAddress(account.notes);
   const [expanded, setExpanded] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -101,12 +109,14 @@ export default function SocialAccountRow({ account, emails, pinActive, onPinNeed
         <div className="flex items-center gap-2 pl-5 pr-3 py-2 border-t border-border/30 bg-card/30">
           <span className="text-sm flex-shrink-0">{getPlatformIcon(account.platform)}</span>
           <div className="flex-1 min-w-0">
-            <span className="text-[11px] font-medium syntax-keyword">{account.platform}</span>
-            {account.username && (
-              <span className="text-[11px] syntax-variable ml-1.5">@{account.username}</span>
-            )}
-            {account.phone && (
-              <span className="text-[11px] syntax-number ml-1.5 font-mono">{account.phone}</span>
+            <div>
+              <span className="text-[11px] font-medium syntax-keyword">{account.platform}</span>
+              {account.username && (
+                <span className="text-[11px] syntax-variable ml-1.5">@{account.username}</span>
+              )}
+            </div>
+            {altAddress && (
+              <div className="text-[10px] font-mono text-muted-foreground/40">{altAddress}</div>
             )}
           </div>
           <div className="flex items-center gap-0.5 flex-shrink-0">
@@ -182,12 +192,14 @@ export default function SocialAccountRow({ account, emails, pinActive, onPinNeed
           <div className="flex items-center gap-2">
             <span>{getPlatformIcon(account.platform)}</span>
             <div>
-              <span className="text-xs font-medium syntax-keyword">{account.platform}</span>
-              {account.username && (
-                <span className="text-xs syntax-variable ml-1.5">@{account.username}</span>
-              )}
-              {account.phone && (
-                <span className="text-xs syntax-number ml-1.5 font-mono">{account.phone}</span>
+              <div>
+                <span className="text-xs font-medium syntax-keyword">{account.platform}</span>
+                {account.username && (
+                  <span className="text-xs syntax-variable ml-1.5">@{account.username}</span>
+                )}
+              </div>
+              {altAddress && (
+                <div className="text-[10px] font-mono text-muted-foreground/40">{altAddress}</div>
               )}
             </div>
           </div>
@@ -267,7 +279,7 @@ export default function SocialAccountRow({ account, emails, pinActive, onPinNeed
               ) : (
                 <p className="text-xs text-muted-foreground/60">Tidak ada credential tersimpan.</p>
               )}
-              {account.notes && (
+              {account.notes && !altAddress && (
                 <p className="text-xs text-muted-foreground/60 italic border-t border-border/50 pt-2 mt-2">
                   {account.notes}
                 </p>

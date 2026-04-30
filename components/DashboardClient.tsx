@@ -42,6 +42,7 @@ const PLATFORM_ICONS: Record<string, string> = {
   instagram: "📸", tiktok: "🎵", facebook: "📘",
   reddit: "🤖", github: "🐙", steam: "🕹️",
   youtube: "▶️", twitch: "💜", spotify: "🎧",
+  bybit: "🪙", stockbit: "📈",
 };
 
 export default function DashboardClient({ emails }: Props) {
