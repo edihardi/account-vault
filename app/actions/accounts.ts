@@ -11,6 +11,9 @@ export async function createAccountAction(
   _prev: AccountFormState,
   formData: FormData
 ): Promise<AccountFormState> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return { error: "Unauthorized" };
+
   const emailId = formData.get("emailId") as string;
   const platform = (formData.get("platform") as string)?.trim();
   const username = (formData.get("username") as string)?.trim() || null;
@@ -56,6 +59,9 @@ export async function updateAccountAction(
   _prev: AccountFormState,
   formData: FormData
 ): Promise<AccountFormState> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return { error: "Unauthorized" };
+
   const id = formData.get("id") as string;
   const platform = (formData.get("platform") as string)?.trim();
   const username = (formData.get("username") as string)?.trim() || null;
@@ -91,6 +97,9 @@ export async function updateAccountAction(
 }
 
 export async function deleteAccountAction(id: string): Promise<void> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return;
+
   await prisma.socialAccount.update({
     where: { id },
     data: { deletedAt: new Date() },

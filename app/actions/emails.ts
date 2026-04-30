@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { encrypt, decrypt } from "@/lib/crypto";
+import { encrypt, decrypt, encryptOptional, decryptOptional } from "@/lib/crypto";
 import { getSession, isPinSessionActive } from "@/lib/session";
 
 export type RevealEmailResult =
@@ -18,6 +18,9 @@ export async function createEmailAction(
   _prev: EmailFormState,
   formData: FormData
 ): Promise<EmailFormState> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return { error: "Unauthorized" };
+
   const emailAddress = (formData.get("emailAddress") as string)?.trim();
   const password = formData.get("password") as string;
   const provider = (formData.get("provider") as string)?.trim();
@@ -41,7 +44,7 @@ export async function createEmailAction(
       emailAddress,
       password: encrypt(password),
       provider,
-      recoveryEmail,
+      recoveryEmail: encryptOptional(recoveryEmail),
       proxy,
       notes,
     },
@@ -58,6 +61,9 @@ export async function updateEmailAction(
   _prev: EmailFormState,
   formData: FormData
 ): Promise<EmailFormState> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return { error: "Unauthorized" };
+
   const id = formData.get("id") as string;
   const emailAddress = (formData.get("emailAddress") as string)?.trim();
   const password = formData.get("password") as string;
@@ -81,7 +87,7 @@ export async function updateEmailAction(
       // Hanya update password jika diisi
       ...(password ? { password: encrypt(password) } : {}),
       provider,
-      recoveryEmail,
+      recoveryEmail: encryptOptional(recoveryEmail),
       proxy,
       status,
       notes,
@@ -105,7 +111,7 @@ export async function revealEmailPasswordAction(id: string): Promise<RevealEmail
 
   return {
     password: decrypt(email.password),
-    recoveryEmail: email.recoveryEmail ?? null,
+    recoveryEmail: decryptOptional(email.recoveryEmail),
   };
 }
 
@@ -113,6 +119,9 @@ export async function revealEmailPasswordAction(id: string): Promise<RevealEmail
 // Soft delete email
 // ---------------------------------------------------------------------------
 export async function deleteEmailAction(id: string): Promise<void> {
+  const session = await getSession();
+  if (!session.isLoggedIn) return;
+
   await prisma.emailAccount.update({
     where: { id },
     data: { deletedAt: new Date() },
