@@ -21,6 +21,7 @@ interface AccountRow {
   phone: string | null;
   status: string;
   notes: string | null;
+  emailAlias: string | null;
   emailId: string;
   password: string | null;
   token: string | null;
@@ -55,14 +56,8 @@ function getPlatformIcon(p: string) {
   return PLATFORM_ICONS[p.toLowerCase()] ?? "🔑";
 }
 
-function getAltAddress(notes: string | null): string | null {
-  if (!notes) return null;
-  const m = notes.match(/Registered with (?:plus|dot) address:\s*(\S+@\S+)/i);
-  return m ? m[1] : null;
-}
-
 export default function SocialAccountRow({ account, emails, pinActive, onPinNeeded, variant = "table" }: Props) {
-  const altAddress = getAltAddress(account.notes);
+  const altAddress = account.emailAlias;
   const [expanded, setExpanded] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -279,7 +274,7 @@ export default function SocialAccountRow({ account, emails, pinActive, onPinNeed
               ) : (
                 <p className="text-xs text-muted-foreground/60">Tidak ada credential tersimpan.</p>
               )}
-              {account.notes && !altAddress && (
+              {account.notes && (
                 <p className="text-xs text-muted-foreground/60 italic border-t border-border/50 pt-2 mt-2">
                   {account.notes}
                 </p>

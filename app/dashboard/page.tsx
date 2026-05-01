@@ -26,6 +26,7 @@ export default async function DashboardPage() {
           phone: true,
           status: true,
           notes: true,
+          emailAlias: true,
           emailId: true,
           password: true,
           token: true,

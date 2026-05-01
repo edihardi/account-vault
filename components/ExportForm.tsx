@@ -9,14 +9,13 @@ export default function ExportForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  async function handleExport(e: React.FormEvent) {
-    e.preventDefault();
+  async function doExport(endpoint: string, filename: string) {
     setError(null);
     setSuccess(false);
     setLoading(true);
 
     try {
-      const res = await fetch("/api/export", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -28,13 +27,11 @@ export default function ExportForm() {
         return;
       }
 
-      // Trigger download
       const blob = await res.blob();
-      const date = new Date().toISOString().slice(0, 10);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `account-vault-${date}.avbak`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
 
@@ -48,8 +45,20 @@ export default function ExportForm() {
     }
   }
 
+  function handleExport(e: React.FormEvent) {
+    e.preventDefault();
+    const date = new Date().toISOString().slice(0, 10);
+    doExport("/api/export", `account-vault-${date}.avbak`);
+  }
+
+  function handleExportJson(e: React.FormEvent) {
+    e.preventDefault();
+    const date = new Date().toISOString().slice(0, 10);
+    doExport("/api/export/json", `account-vault-${date}.json`);
+  }
+
   return (
-    <form onSubmit={handleExport} className="space-y-4">
+    <form onSubmit={handleExport} className="space-y-4" noValidate>
       <div>
         <label className="block text-xs text-muted-foreground mb-1.5">
           Konfirmasi Master Password
@@ -84,18 +93,29 @@ export default function ExportForm() {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={loading || !password}
-        className="w-full py-2 bg-primary hover:opacity-90 disabled:opacity-40 text-primary-foreground
-                   text-sm font-medium rounded-lg transition-opacity"
-      >
-        {loading ? "Mengekspor..." : "Download Backup"}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading || !password}
+          className="flex-1 py-2 bg-primary hover:opacity-90 disabled:opacity-40 text-primary-foreground
+                     text-sm font-medium rounded-lg transition-opacity"
+        >
+          {loading ? "Mengekspor..." : "Download .avbak"}
+        </button>
+        <button
+          type="button"
+          onClick={handleExportJson}
+          disabled={loading || !password}
+          className="flex-1 py-2 bg-muted hover:bg-muted/80 disabled:opacity-40 text-foreground
+                     text-sm font-medium rounded-lg transition-colors border border-border"
+        >
+          {loading ? "Mengekspor..." : "Download .json"}
+        </button>
+      </div>
 
       <p className="text-xs text-muted-foreground/60">
-        File <code className="font-mono">.avbak</code> dienkripsi dengan master password.
-        Simpan di tempat aman.
+        <code className="font-mono">.avbak</code> — terenkripsi, hanya bisa dibuka lewat Import.<br />
+        <code className="font-mono">.json</code> — plain text, bisa dibuka di text editor.
       </p>
     </form>
   );

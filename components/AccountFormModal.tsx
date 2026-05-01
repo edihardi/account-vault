@@ -25,6 +25,7 @@ interface AccountData {
   phone: string | null;
   status: string;
   notes: string | null;
+  emailAlias: string | null;
   emailId: string;
 }
 
@@ -203,6 +204,19 @@ export default function AccountFormModal({ emails, account, defaultEmailId, onCl
               </select>
             </div>
           )}
+
+          <div>
+            <label className={`${labelCls} syntax-string`}>
+              Email Alias <span className="text-muted-foreground/40 font-normal">(plus addressing, opsional)</span>
+            </label>
+            <input
+              name="emailAlias"
+              type="text"
+              defaultValue={account?.emailAlias ?? ""}
+              placeholder="user+discord@gmail.com"
+              className={`${inputCls} font-mono`}
+            />
+          </div>
 
           <div>
             <label className={`${labelCls} syntax-comment`}>

@@ -22,6 +22,7 @@ export async function createAccountAction(
   const token = formData.get("token") as string;
   const totpSeed = formData.get("totpSeed") as string;
   const notes = (formData.get("notes") as string)?.trim() || null;
+  const emailAlias = (formData.get("emailAlias") as string)?.trim() || null;
 
   if (!emailId || !platform) {
     return { error: "Email induk dan platform wajib diisi." };
@@ -48,6 +49,7 @@ export async function createAccountAction(
       token: token ? encrypt(token) : null,
       totpSeed: totpSeed ? encrypt(totpSeed) : null,
       notes,
+      emailAlias,
     },
   });
 
@@ -71,6 +73,7 @@ export async function updateAccountAction(
   const totpSeed = formData.get("totpSeed") as string;
   const status = (formData.get("status") as string) || "ACTIVE";
   const notes = (formData.get("notes") as string)?.trim() || null;
+  const emailAlias = (formData.get("emailAlias") as string)?.trim() || null;
 
   if (!id || !platform) return { error: "Data tidak lengkap." };
   if (!username && !phone) return { error: "Username atau nomor telepon wajib diisi." };
@@ -89,6 +92,7 @@ export async function updateAccountAction(
       ...(totpSeed ? { totpSeed: encrypt(totpSeed) } : totpSeed === "" ? { totpSeed: null } : {}),
       status,
       notes,
+      emailAlias,
     },
   });
 

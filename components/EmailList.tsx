@@ -18,6 +18,7 @@ interface SocialAccount {
   phone: string | null;
   status: string;
   notes: string | null;
+  emailAlias: string | null;
   emailId: string;
   password: string | null;
   token: string | null;

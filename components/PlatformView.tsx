@@ -17,6 +17,7 @@ interface SocialAccount {
   phone: string | null;
   status: string;
   notes: string | null;
+  emailAlias: string | null;
   emailId: string;
   password: string | null;
   token: string | null;
@@ -125,11 +126,12 @@ export default function PlatformView({ emails, platform }: Props) {
       ) : (
         <>
           <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
-            {paginated.map(({ account, emailAddress }) => {
+            {paginated.map(({ account, emailAddress }, i) => {
               const revealed = revealedMap[account.id];
               return (
                 <PlatformAccountRow
                   key={account.id}
+                  index={i}
                   account={account}
                   emailAddress={emailAddress}
                   revealed={revealed ?? null}
@@ -159,6 +161,7 @@ export default function PlatformView({ emails, platform }: Props) {
 // ─── Sub-component per baris ─────────────────────────────────────────────────
 
 interface RowProps {
+  index: number;
   account: SocialAccount;
   emailAddress: string;
   revealed: RevealedData | null;
@@ -170,7 +173,7 @@ interface RowProps {
 }
 
 function PlatformAccountRow({
-  account, emailAddress, revealed, copied,
+  index, account, emailAddress, revealed, copied,
   pinActive, onPinNeeded, onRevealed, onCopy,
 }: RowProps) {
   const [isPending, startTransition] = useTransition();
@@ -196,10 +199,10 @@ function PlatformAccountRow({
 
   const hasPassword = !!(account.password);
   const displayName = account.username ?? account.phone ?? "—";
-  const altAddress = account.notes?.match(/Registered with (?:plus|dot) address:\s*(\S+@\S+)/i)?.[1] ?? null;
+  const altAddress = account.emailAlias;
 
   return (
-    <div className="px-4 py-3 bg-background hover:bg-muted/20 transition-colors">
+    <div className="px-4 py-3 bg-background hover:bg-muted/20 transition-colors animate-fade-up" style={{ animationDelay: `${index * 55}ms` }}>
       {/* Baris atas: username + status */}
       <div className="flex items-center justify-between gap-2 mb-0.5">
         <span className="text-sm font-medium syntax-variable font-mono truncate">

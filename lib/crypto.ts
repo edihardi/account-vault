@@ -59,8 +59,11 @@ export function encryptOptional(value: string | null | undefined): string | null
 
 /**
  * Dekripsi nilai opsional — return null jika input null/undefined.
+ * Jika nilai tidak dalam format terenkripsi (data lama), kembalikan apa adanya.
  */
 export function decryptOptional(value: string | null | undefined): string | null {
   if (value == null || value === "") return null;
+  const parts = value.split(":");
+  if (parts.length !== 3) return value;
   return decrypt(value);
 }
